@@ -1,5 +1,6 @@
 //push test
 $(document).ready(function(){
+  var git_test = 100500;
   var timerId;
   var sequence = [];
   var timerIdArr = [];
