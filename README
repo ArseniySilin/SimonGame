@@ -1,8 +1,12 @@
-Simon is a game of memory skill invented by Ralph H. Baer and Howard J. Morrison with software programming by Lenny Cope. 
+Simon is a game of memory skill invented by Ralph H. Baer and Howard J. Morrison with 
+software programming by Lenny Cope. 
 
-The original device creates a series of tones and lights and requires a user to repeat the sequence. If the user succeeds, the series becomes progressively longer and more complex.
+The original device creates a series of tones and lights and requires a user to repeat 
+the sequence. If the user succeeds, the series becomes progressively longer and more 
+complex.
 
-Once the user fails in a strict mode, the game is over. If user is not in a strict mode the sequence repeats. 
+Once the user fails in a strict mode, the game is over. If user is not in a strict mode 
+the sequence repeats. 
 
 You can win the game by getting a series of 20 steps correct. 
 
