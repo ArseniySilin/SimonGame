@@ -1,11 +1,14 @@
-//push test
+
 $(document).ready(function(){
-  var git_test = 100500;
+  
   var timerId;
+  var isStrict = false;
   var sequence = [];
+  var sequencePlayer = [];
   var timerIdArr = [];
   var count = 0;
-  var WINNER_COUNT = 20;
+  var countForCheck = 0;
+  var WINNER_COUNT = 20; //20
   var btnColorsO = [null,//all btn original colors
                      'ForestGreen',
                      'firebrick',
@@ -16,60 +19,226 @@ $(document).ready(function(){
                      'red',
                      'blue',
                      'yellow'];
+  var frequencies = [null, 349.23, 392, 440, 523.2];
   
-  function playSequence() {
-    var toggle = true; //toggling button colors
+  audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+  
+  function beep(freq) {
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    gainNode.gain.value = 0.5;
+    oscillator.frequency.value = freq;
+    oscillator.type = 'sine';
+
+    oscillator.start();
+
+    setTimeout( function() {
+        oscillator.stop();
+    }, 300);
+  }
+  
+  function changeBtnColor(btnNumId, type){
+    if(type === 'highlight')
+      $("#q" + btnNumId).css("background-color", btnColorsH[ btnNumId ]); 
+    else
+      $("#q" + btnNumId).css("background-color", btnColorsO[ btnNumId ]);
+  }
+  function resetBtnColors(){
+    for(var i = 1; i <= 4; i++){
+        $("#q" + i).css("background-color", btnColorsO[i]);
+     }
+  }
+  
+  function clickButton(){    
+    var b = parseInt( $(this).data('id')[1] );
     
-    function rand(min, max) {
-     return Math.floor(Math.random() * (max + 1 - min)) + min;
+    var cn = 0;
+    var TIMEOUT = 300;
+    
+    $("#q" + b ).css("background-color", btnColorsH[b]);
+    
+    beep(frequencies[b]);
+    
+    timerId = setTimeout(function() {
+      $("#q" + b ).css("background-color", btnColorsO[b]);
+    }, TIMEOUT);
+    
+    setTimeout(function() {
+      clearTimeout(timerId);
+      checkPlayer(b);
+    }, TIMEOUT + 200);
+    
+  }
+  
+  function checkPlayer(e){
+    var sw = false;
+    var CD_TIMEOUT = 350; //count display timeout
+    var CONGRATS_TIME = 3100; // how long to greet a winner
+    if(sequence[countForCheck] === +e){
+      if(countForCheck === sequence.length - 1){
+        //alert("Yeah, Right!");
+        $("#counter").text('OK');
+        setTimeout(function () {
+          sequencePlayer = [];
+          countForCheck = 0;
+          
+          if(count < WINNER_COUNT){
+            counter();
+            playSequence('new');
+          } else {
+            
+            //show winner congrats
+            var btnCounter = 1;
+            var tmpSwitch = true;
+            var winToggle = true;
+            
+            $("#counter").text('WIN');
+            var timerId2 = setInterval(function () {
+              
+              if(tmpSwitch)
+                $("#q" + btnCounter).css("background-color", btnColorsH[btnCounter]);
+              else {
+                $("#q" + btnCounter).css("background-color", btnColorsO[btnCounter]);          
+                btnCounter++;
+              }
+              
+              if(btnCounter === 5) {
+                btnCounter = 1;
+                if(winToggle === true)
+                  $("#counter").text('');
+                else
+                  $("#counter").text('WIN');
+                winToggle = !winToggle;
+              }
+              
+              tmpSwitch = !tmpSwitch;
+            }, 50);
+           
+            setTimeout(function () {
+              count = 0;
+              sequencePlayer = [];
+              countForCheck = 0;
+              sequence = [];
+              resetBtnColors();
+              clearInterval(timerId2);
+              counter();
+              playSequence('new');              
+            }, CONGRATS_TIME);
+          }
+        }, CD_TIMEOUT * 3);
+      } else {
+        sequencePlayer.push(e);
+        countForCheck++;
+      }
+    } else {
+      //alert("Wrong, try again!");
+      $(document).off('click', '.q', clickButton);
+      $("#counter").text('!!!!');
+      timerId = setInterval(function () {
+        if(sw) {
+          $("#counter").css('color','red');
+          $("#counter").text('!!!!');
+        }
+        else {
+          $("#counter").text('');
+          $("#counter").css('color','#700700');
+          $("#counter").text('--');
+        }
+        sw = !sw;
+      }, CD_TIMEOUT);
+      
+      setTimeout(function() {
+        $("#counter").css('color','red');
+
+        if(isStrict){
+          count = 0;  
+          sequencePlayer = [];
+          countForCheck = 0;
+          sequence = [];
+          clearInterval(timerId);
+          counter();
+          playSequence('new');   
+        } else {
+          clearInterval(timerId);
+          playSequence('repeat');
+          count--;
+          counter();
+        }
+      }, CD_TIMEOUT * 3 + 100);
+      
+      sequencePlayer = [];
+      countForCheck = 0;
     }
-        
+      
+  }
+  
+  function playSequence(mode) {
+    resetBtnColors();
+    //no need to check players click while still playing the sequence
+    $(document).off('click', '.q', clickButton);
+    //for button color change and back logic
+    var toggle = true; 
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max + 1 - min)) + min;
+    }
     var r; //random
     var i = 0; //index for butnColors arrays
     var c = 0; //counter for correct changing color
-    var audio;    
-//  
-    //for(var j = 1; j <= 4; j++){
-      //$("#q" + j).removeClass("q");
-    //}
+    var audio;
+    var tmpCount = 0;
+    var SEQ_TIMEOUT = 400;//700
     
+    if(mode === 'new')
+      sequence = [];
+    if(mode === 'repeat')
+      r = 0;
+    
+    //console.log("mode: " + mode);
     timerId = setInterval(function() { 
-      r = rand(1, 4);
-      sequence.push(r); //saving random value in a sequence
-      //play audio    
-      //audio = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound' + r + '.mp3');
-      //audio.play();
-      
-      if(toggle)
-        $("#q" + sequence[i].toString()).css("background-color", btnColorsH[sequence[i]]);              
-      else 
-        $("#q" + sequence[i].toString()).css("background-color", btnColorsO[sequence[i]]);      
-      toggle = !toggle;                    
-      
-      if(++c % 2 === 0)
-        i++;
-    }, 1000);
+      if(toggle){
+        if(mode === 'new'){          
+          r = rand(1, 4);
+          sequence.push(r);          
+          //console.log("sequence[]: " + sequence);
+          changeBtnColor(r, 'highlight');
+          beep(frequencies[r]);                    
+        }
+        if(mode === 'repeat'){
+          beep(frequencies[ sequence[r] ]);
+          changeBtnColor(sequence[r], 'highlight');
+        }
+      }
+      else {        
+        if(mode === 'repeat') {
+          changeBtnColor(sequence[r], 'change it back');
+          r++;
+        }
+        if(mode === 'new')
+          changeBtnColor(r, 'change it back');
+      }
+      toggle = !toggle;
+    }, SEQ_TIMEOUT);
     
     setTimeout(function() {
       clearInterval(timerId);
-     
-      //for(var j = 1; j <= 4; j++){
-      //$("#q" + j).addClass("q");
-    //}
-    }, 2000 * count + 200);
-    
-    //if() //only after succesfull sequence check
-    count++;
-    
+      $(document).on('click', '.q', clickButton);
+    }, SEQ_TIMEOUT * 2 * count + 200);
   }
   
   function counter() {    
-    if(++count < 10)
-      count = '0' + count;    
-    $("#counter").text(count);    
+    count++;
+    if(count < 10)    
+      $("#counter").text('0' + count); 
+    else
+      $("#counter").text(count);
   }
   
   function checkBox() {
+   
     if(document.getElementById("switch").checked){
       //on
       $("#counter").css('color','red');
@@ -78,8 +247,8 @@ $(document).ready(function(){
       $("#counter").css('color','#700700');
       $("#counter").text('--');
       $("#diod").css('background-color', '#420f0f');
+      resetBtnColors();
       if(timerId){
-        //clearInterval(timerId);
         clearTimeout(timerId);
         timerId = null;
       }
@@ -87,66 +256,29 @@ $(document).ready(function(){
     }
   }
   
-  function checkPlayer(){
-    /*if(player succeed){
-      if(count === WINNER_COUNT)
-        return 'win';
-      return 'next_seq';
-    } else {
-      return 0;  
-    } */   
-    /*$(document).on('click', '.clickCell', function(){
-      var $this = $(this);
-      var elemId = $this.data('id');    
-      var e = elemId[1];
-      alert(e);
-    });*/
-    
-    
-    //if(sequence[count - 1] === )
-  }
   
-  function start() {
+  function strict() { 
     if(document.getElementById("switch").checked){
-      //make next round after players win
-      
-      counter();
-      playSequence();
-      alert(checkPlayer());
-      
-      
-      /*
-      if(count > 0){
-        //while(checkPlayer() !== 'win'){
-          if(checkPlayer() === 0){
-            //show mistake
-            playSequence();
-          }
-          if(checkPlayer() === 'next_seq'){
-            counter();
-          }                              
-        //}
-      }*/
-      
+      if($("#diod").css('background-color') === 'rgb(66, 15, 15)' ){
+        //should turn it on
+        $("#diod").css('background-color', 'red');
+        isStrict = true;
+      } else {
+        //resetBtnColors();
+        $("#diod").css('background-color', '#420f0f');            
+        isStrict = false;      
+      } 
     } 
   }
-  function strict() {    
-    if( $("#diod").css('background-color') === 'rgb(66, 15, 15)' ){
-      //should turn it on
-      $("#diod").css('background-color', 'red');
-    } else {
-      //off
-      $("#diod").css('background-color', '#420f0f');
-    }     
+  function start() {
+    if(document.getElementById("switch").checked && count === 0){
+      counter();
+      playSequence('new');
+    } 
   }
   //////////////////////////////////
   $("#switch").on('click', checkBox);
   $("#start").on('click', start);
   $("#strict").on('click', strict);
-  $(document).on('click', '.q', function(){
-      var $this = $(this);
-      var elemId = $this.data('id');    
-      var e = elemId[1];
-      alert(e);
-    });
+  console.log('Started...');
 });
