@@ -1,38 +1,51 @@
-
-<div class="back-circle"> 
-   <div class="menu"><a href="https://en.wikipedia.org/wiki/Simon_(game)">SIMON</a><br>
-     
-     <div class="group1">
-       <div id="counter" class="m-border column"><span>--</span></div>
-       <div id="start" class="button column"></div>
-       <div id="diod"></div>
-       <div id="strict" class="button column"></div>
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap-grid.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+  <script src="js.js"></script>
+</head>
+<body style="background-color: goldenrod;">
+  <div class="back-circle"> 
+     <div class="menu"><a href="https://en.wikipedia.org/wiki/Simon_(game)">SIMON</a><br>
+       
+       <div class="group1">
+         <div id="counter" class="m-border column"><span>--</span></div>
+         <div id="start" class="button column"></div>
+         <div id="diod"></div>
+         <div id="strict" class="button column"></div>
+       </div>
+       
+       <div class="labels">
+         <span>COUNT</span>
+         <span style="margin-left:18px;">START</span>
+         <span style="margin-left:5px;">STRICT</span>
+       </div>
+    
+       
+       <span class="labels" style="position:absolute; margin-top: 2px; margin-left:-43px;">OFF</span>
+       <label class="switch" style="float:left">
+        <input type="checkbox" id="switch">       
+        <span class="slider round"></span>     
+       </label>
+       <span class="labels" style="position:absolute;margin-top:2px; margin-left: 24px;">ON</span>          
      </div>
-     
-     <div class="labels">
-       <span>COUNT</span>
-       <span style="margin-left:18px;">START</span>
-       <span style="margin-left:5px;">STRICT</span>
-     </div>
-  
-     
-     <span class="labels" style="position:absolute; margin-top: 2px; margin-left:-43px;">OFF</span>
-     <label class="switch" style="float:left">
-      <input type="checkbox" id="switch">       
-      <span class="slider round"></span>     
-     </label>
-     <span class="labels" style="position:absolute;margin-top:2px; margin-left: 24px;">ON</span>          
-   </div>
-  
-  <table>
-  <tr>
-     <td class="q q1" id="q1" data-id="q1" style="text-align: center; vertical-align: middle;"></td>
-     <td class="q q2" id="q2" data-id="q2" style="text-align: center; vertical-align: middle;"></td>
-  </tr>
-  <tr>
-     <td class="q q3" id="q3" data-id="q3" style="text-align: center; vertical-align: middle;"></td>
-     <td class="q q4" id="q4" data-id="q4" style="text-align: center; vertical-align: middle;"></td>
-  </tr>  
-  
-</table> 
-</div>
+    
+    <table>
+    <tr>
+       <td class="q q1" id="q1" data-id="q1" style="text-align: center; vertical-align: middle;"></td>
+       <td class="q q2" id="q2" data-id="q2" style="text-align: center; vertical-align: middle;"></td>
+    </tr>
+    <tr>
+       <td class="q q3" id="q3" data-id="q3" style="text-align: center; vertical-align: middle;"></td>
+       <td class="q q4" id="q4" data-id="q4" style="text-align: center; vertical-align: middle;"></td>
+    </tr>  
+    
+  </table> 
+  </div>
+</body>
+</html>  
