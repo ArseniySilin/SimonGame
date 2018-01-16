@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Anton|Teko|Orbitron');
 
 html, body {
-  background-color: goldenrod;
+  background-color: #d4a640;
+  background-image: url("black-linen.png");
 }
 
 .back-circle {  
